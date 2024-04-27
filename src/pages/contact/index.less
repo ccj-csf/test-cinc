@@ -1,0 +1,25 @@
+// 渐变边框
+.border-gradient {
+  background: linear-gradient(
+    0deg,
+    rgb(17, 17, 17) 0%,
+    rgb(17, 17, 17) 15.3153%,
+    rgb(133, 255, 255) 60.3604%,
+    rgb(57, 121, 218) 100%
+  );
+  border-radius: 12px;
+  flex: 0 0 auto;
+  height: 332px;
+  overflow: hidden;
+  position: relative;
+  width: 322px;
+  .inner {
+    position: absolute;
+    background-color: #000;
+    border-radius: 12px;
+    inset: 1px;
+    box-shadow: rgb(54 56 58 / 8%) 0px -18px 31px 0px;
+    overflow: visible;
+    padding: 20px;
+  }
+}

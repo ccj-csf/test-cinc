@@ -1,0 +1,21 @@
+.swiper {
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+}
+
+.swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: calc(100vw * 0.88);
+    height: calc(100vh * 0.75);
+    color: whitesmoke;
+    background-size: 100%;
+    background: rgb(34, 193, 195);
+    background: linear-gradient(90deg, rgb(17 33 50) 0%, rgb(6 6 6) 100%);
+}
+
+.swiper-slide img {
+    display: block;
+    width: 100%;
+}
