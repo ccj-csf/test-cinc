@@ -36,7 +36,7 @@ export default function ({ user }: Props) {
             <AvatarFallback>{user.nickname}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="mx-4">
+        <DropdownMenuContent className="mx-4 z-100">
           <DropdownMenuLabel className="text-center truncate">
             {user.nickname ? user.nickname : user.email}
           </DropdownMenuLabel>

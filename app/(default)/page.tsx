@@ -44,7 +44,7 @@ const data = {
 };
 const regex = /\/([^.]*)\.mp3/;
 export default function () {
-  const [music, setMusic] = useState<Music[]>([]);
+  const [music, setMusic] = useState<Music[]>();
   const { data: musicList, loading } = useRequest(
     async () => {
       const { code, data } = await fetchEnhanced("/api/personal/music");
@@ -74,11 +74,11 @@ export default function () {
       <div className="max-w-3xl mx-auto">
         <Hero />
 
-        <div className="flex flex-col mx-auto my-12 flex max-w-2xl justify-center">
+        <div className="flex flex-col mx-auto my-12  max-w-2xl justify-center">
           <Input setMusic={setMusic} />
         </div>
 
-        <div className="flex my-6 mx-auto justify-around max-w-2xl gap-4">
+        <div className="md:flex md:my-6 md:mx-auto md:justify-around md:max-w-2xl md:gap-4">
           {music &&
             music.map((music, index) => (
               <div
