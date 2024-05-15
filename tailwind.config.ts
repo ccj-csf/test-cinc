@@ -1,13 +1,13 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-	],
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -67,14 +67,45 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        zoomIn: {
+          "0%": {
+            width: "86px",
+            height: "86px",
+          },
+          "100%": {
+            width: "100%",
+            height: "100%",
+          },
+        },
+        zoomOut: {
+          "0%": {
+            width: "100%",
+            height: "100%",
+          },
+          "100%": {
+            width: "86px",
+            height: "86px",
+          },
+        },
+        fadeIn: {
+          "0%": {
+            opacity: "0.5",
+          },
+          "100%": {
+            opacity: "1",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        zoomIn: "zoomIn 1s ease-in-out forwards",
+        zoomOut: "zoomOut 1s ease-in-out forwards",
+        fadeIn: "fadeIn 1s ease-in-out forwards",
       },
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config
+} satisfies Config;
 
-export default config
+export default config;

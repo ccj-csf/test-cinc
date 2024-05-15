@@ -1,121 +1,105 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRequest } from "ahooks";
 import { fetchEnhanced } from "@/utils/request";
-import Hero from "@/components/hero";
-import Input from "@/components/input";
-import { Music } from "@/types/music";
-import "./audioPlayer.css";
-import dynamic from "next/dynamic";
-// Dynamically import the AudioPlayer component
-const DynamicAudioPlayer = dynamic(
-  () => import("react-modern-audio-player"),
-  { ssr: false } // This line is important. It disables server-side rendering for the component.
-);
+import MusicPlayer from "@/components/MusicPlayer/MusicPlayer";
+import Loading from "@/components/loading";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
-// type AudioData = {
-//   src: string;
-//   id: number;
-//   name?: string;
-//   writer?: string;
-//   img?: string;
-//   description?: string;
-//   customTrackInfo?: string;
-// };
-const data = {
-  isFinish: true,
-  list: [
-    {
-      song_name: "纽约人在西安",
-      lyric:
-        "\n从纽约来到西安\n走上了这个舞台\n天降美人给了一吻\n我看见了中国的妖精\n大街小巷都在晃\n疯狂的城市从不眠\n过去的忧伤全部抛在身后\n在这里我找到了家\n\n\n与朋友一起找乐子\n在这个城市永不停歇\n西安的光芒刺破黑夜\n我爱这里的人们\n纽约的炸弹落下\n每个人在大家庭里扎根\n对于这个城市是我最好的礼物\n一起舞蹈，尽情疯狂\n\n\n纽约人在西安跳华彩\n炸裂的音乐，掌声喝采\n我们在舞动的狂欢中成长\n纽约人在西安跳翩跹\n这里的夜晚永不停歇\n我们的节奏融入这个城市的脉搏",
-      song_url:
-        "https://audiopipe.suno.ai/?item_id=59576546-c140-45a3-a3b6-b2f3c6a3d3b4",
-    },
-    {
-      song_name: "纽约人在西安",
-      lyric:
-        "\n从纽约来到西安\n走上了这个舞台\n天降美人给了一吻\n我看见了中国的妖精\n大街小巷都在晃\n疯狂的城市从不眠\n过去的忧伤全部抛在身后\n在这里我找到了家\n\n\n与朋友一起找乐子\n在这个城市永不停歇\n西安的光芒刺破黑夜\n我爱这里的人们\n纽约的炸弹落下\n每个人在大家庭里扎根\n对于这个城市是我最好的礼物\n一起舞蹈，尽情疯狂\n\n\n纽约人在西安跳华彩\n炸裂的音乐，掌声喝采\n我们在舞动的狂欢中成长\n纽约人在西安跳翩跹\n这里的夜晚永不停歇\n我们的节奏融入这个城市的脉搏",
-      song_url:
-        "https://audiopipe.suno.ai/?item_id=aed4d7d1-1539-459b-b84b-ccfe32f945d5",
-    },
-  ],
-};
-const regex = /\/([^.]*)\.mp3/;
 export default function () {
-  const [music, setMusic] = useState<Music[]>();
-  const { data: musicList, loading } = useRequest(
+  // 获取音乐列表
+  const { run, data, loading } = useRequest(
     async () => {
-      const { code, data } = await fetchEnhanced("/api/personal/music");
+      const { code, data } = await fetchEnhanced("/api/music/token");
 
       if (code !== 0) {
         throw new Error("fetch token failed");
       }
 
-      return data.map((item: { id: any; song_name: any; song_url: string }) => {
-        const songId1 = item.song_url?.match?.(regex)?.[1];
-        return {
-          name: item.song_name,
-          writer: "",
-          img: `https://cdn1.suno.ai/image_${songId1}.png`,
-          src: item.song_url,
-          id: item.id,
-        };
+      const resp = await fetchEnhanced("/api/music/explore", {
+        headers: {
+          Authorization: `Bearer ${data}`,
+        },
       });
+
+      if (resp.code !== 0) {
+        throw new Error("fetch explore failed");
+      }
+      try {
+        // 加载每首歌的音频数据
+        const audioData = await Promise.all(
+          resp.data.map(async (song: any) => {
+            const audio = new Audio(song.audio_url);
+            return new Promise((resolve, reject) => {
+              audio.onloadedmetadata = () => {
+                resolve({
+                  ...song,
+                  duration: audio.duration,
+                  artist: song.display_name,
+                  img: song.image_url,
+                  url: song.audio_url,
+                });
+              };
+              audio.onerror = () =>
+                reject(new Error(`Failed to load audio: ${song.url}`));
+            });
+          })
+        );
+
+        return audioData;
+      } catch (error) {
+        console.error("Error loading audio data:", error);
+        return [];
+      }
     },
     {
-      retryCount: 3,
-      retryInterval: 100,
+      cacheKey: "cacheKey-demo",
+      manual: true,
+      retryCount: 2,
+      retryInterval: 1000,
     }
   );
+
+  useEffect(() => {
+    run();
+  }, []);
+  const [currentSongId, setCurrentSongId] = useState("1");
+  const handleSwitchSong = (id: string) => {
+    setCurrentSongId(id);
+    console.log("Switched to song with ID:", id);
+  };
+  const router = useRouter();
+  const handleGenerate = () => {
+    router.push("/create");
+  };
+
   return (
-    <div className="my-16">
-      <div className="max-w-3xl mx-auto">
-        <Hero />
-
-        <div className="flex flex-col mx-auto my-12  max-w-2xl justify-center">
-          <Input setMusic={setMusic} />
-        </div>
-
-        <div className="md:flex md:my-6 md:mx-auto md:justify-around md:max-w-2xl md:gap-4">
-          {music &&
-            music.map((music, index) => (
-              <div
-                key={index}
-                className="flex flex-col rounded-xl bg-clip-border text-white shadow-md"
-              >
-                <div className="p-4">
-                  <audio
-                    className="h-6 mx-auto"
-                    controls
-                    src={music.song_url}
-                  />
-                </div>
-                <div className="p-4 pt-0">
-                  <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-                    {music.song_name}
-                  </h5>
-                  <p
-                    className="block font-sans text-base font-light leading-relaxed text-inherit antialiased max-h-60 verscroll-y-auto overflow-y-scroll"
-                    dangerouslySetInnerHTML={{
-                      __html: music.lyric?.replace?.(/\n{1,2}/g, "<br>") ?? "",
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
-        </div>
-      </div>
-      <footer className="fixed inset-x-0 bottom-0">
-        {!loading && musicList && musicList.length > 0 && (
-          <DynamicAudioPlayer
-            playList={musicList}
-            activeUI={{ all: true }}
-            rootContainerProps={{ colorScheme: "dark" }}
-          />
-        )}
-      </footer>
-    </div>
+    <section className="flex justify-center items-center">
+      {loading ? (
+        <Loading></Loading>
+      ) : (
+        data &&
+        data?.length > 0 && (
+          <div className="flex flex-col ">
+            <h2 className="  text-[24px] text-center text-black font-bold px-4 mb-8 md:hidden">
+              Explore new styles of music with WAV
+            </h2>
+            <MusicPlayer
+              songs={data as any}
+              onSwitchSong={handleSwitchSong}
+              currentSongId={currentSongId}
+            />
+            <Button
+              onClick={handleGenerate}
+              className=" !h-[44px] mt-[50px] md:hidden"
+            >
+              Generate
+            </Button>
+          </div>
+        )
+      )}
+    </section>
   );
 }

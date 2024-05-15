@@ -2,67 +2,87 @@
 
 import { useEffect, useState } from "react";
 import { useRequest } from "ahooks";
-import { fetchEnhanced } from '@/utils/request';
-import { Loading } from "@/components/ui/loading";
-import "./../audioPlayer.css";
-import dynamic from "next/dynamic";
-// Dynamically import the AudioPlayer component
-const DynamicAudioPlayer = dynamic(
-  () => import("react-modern-audio-player"),
-  { ssr: false } // This line is important. It disables server-side rendering for the component.
-);
+import { fetchEnhanced } from "@/utils/request";
+import MusicPlayer from "@/components/MusicPlayer/MusicPlayer";
+// import "./../audioPlayer.css";
+import { Spin } from "antd";
+const dSongs = [
+  {
+    id: "1",
+    title: "Song One customTrackInfo description",
+    artist: "Artist One ",
+    url: "https://cdn1.suno.ai/a032e7e8-6a1f-4119-bc35-bcb4834815e1.mp3",
+    img: "https://cdn1.suno.ai/image_392f9a22-ae5f-4fb4-ab58-32b49ad6be1a.png",
+  },
+  {
+    id: "2",
+    title: "Song Two",
+    artist: "Artist Two",
+    url: "https://cdn1.suno.ai/392f9a22-ae5f-4fb4-ab58-32b49ad6be1a.mp3",
+    img: "https://cdn1.suno.ai/image_large_a032e7e8-6a1f-4119-bc35-bcb4834815e1.png",
+  },
+  {
+    id: "3",
+    title: "Song Three",
+    artist: "Artist Three",
+    url: "https://cdn1.suno.ai/6a61205f-b65c-4acd-9463-58e8038714e4.mp3",
+    img: "https://cdn1.suno.ai/image_large_6a61205f-b65c-4acd-9463-58e8038714e4.png",
+  },
+  {
+    id: "4",
+    title: "Song Four",
+    artist: "Artist Four",
+    url: "https://cdn1.suno.ai/0df58c4c-d466-4532-9f06-892f4874720f.mp3",
+    img: "https://cdn1.suno.ai/image_large_0df58c4c-d466-4532-9f06-892f4874720f.png",
+  },
+];
 
-type AudioData = {
-  src: string;
-  id: number;
-  name?: string;
-  writer?: string;
-  img?: string;
-  description?: string;
-  customTrackInfo?: string;
-};
 export default function () {
-  const [curPlayId, setCurPlayId] = useState({
-    isPlaying: false,
-    curPlayId: 0
-  });
-  const setPlay = function (key: any) {
-    setCurPlayId({
-      isPlaying: true,
-      curPlayId: key,
-    });
-  };
-  const { run, data: musicList, loading } = useRequest(async () => {
-    const { code, data } = await fetchEnhanced("/api/music/token");
+  const {
+    run,
+    data: musicList,
+    // loading,
+  } = useRequest(
+    async () => {
+      const { code, data } = await fetchEnhanced("/api/music/token");
+      console.log("code :>> ", code);
+      console.log("data :>> ", data);
 
-    if (code !== 0) {
-      throw new Error('fetch token failed');
-    }
-
-    const resp = await fetchEnhanced("/api/music/explore", {
-      headers: {
-        "Authorization": `Bearer ${data}`,
+      if (code !== 0) {
+        throw new Error("fetch token failed");
       }
-    });
 
-    if (resp.code !== 0) {
-      throw new Error('fetch explore failed');
-    }
+      const resp = await fetchEnhanced("/api/music/explore", {
+        headers: {
+          Authorization: `Bearer ${data}`,
+        },
+      });
 
-    return resp?.data.map((item: {title: string; image_url:string, audio_url:string},idx: number) => {
-      return {
-        name: item.title,
-        writer: "",
-        img:  item.image_url,
-        src: item.audio_url,
-        id: idx
+      if (resp.code !== 0) {
+        throw new Error("fetch explore failed");
       }
-    })
-  }, {
-    manual: true,
-    retryCount: 3,
-    retryInterval: 100
-  });
+
+      return resp?.data.map(
+        (
+          item: { title: string; image_url: string; audio_url: string },
+          idx: number
+        ) => {
+          return {
+            name: item.title,
+            writer: "",
+            img: item.image_url,
+            src: item.audio_url,
+            id: idx,
+          };
+        }
+      );
+    },
+    {
+      manual: true,
+      retryCount: 3,
+      retryInterval: 100,
+    }
+  );
 
   // Avoid executing the development environment twice, which may cause errors.
   useEffect(() => {
@@ -71,11 +91,45 @@ export default function () {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [])
+  }, []);
 
+  const [loading, setLoading] = useState(false);
+  const [songs, setSongs] = useState([]);
+  const [currentSongId, setCurrentSongId] = useState("1");
+  const handleSwitchSong = (id: string) => {
+    setCurrentSongId(id);
+    console.log("Switched to song with ID:", id);
+  };
+  useEffect(() => {
+    setLoading(true);
+    const loadAudioData = async () => {
+      const audioData = await Promise.all(
+        dSongs.map(async (song) => {
+          const audio = new Audio(song.url);
+          return new Promise((resolve, reject) => {
+            audio.onloadedmetadata = () => {
+              resolve({ ...song, duration: audio.duration });
+            };
+            setLoading(false);
+            audio.onerror = () => reject(new Error("Failed to load audio"));
+          });
+        })
+      );
+      setSongs(audioData);
+    };
+  }, []);
   return (
-    <section>
-      <div className="mx-auto max-w-7xl px-5 mb-16">
+    <section className="flex justify-center items-center">
+      {loading ? (
+        <Spin />
+      ) : (
+        <MusicPlayer
+          songs={songs}
+          onSwitchSong={handleSwitchSong}
+          currentSongId={currentSongId}
+        />
+      )}
+      {/* <div className="mx-auto max-w-7xl px-5 mb-16">
         {!!loading ? (
           <Loading />
         ) : (
@@ -108,7 +162,7 @@ export default function () {
           audioInitialState={curPlayId}
           activeUI={{ all: true }}
           rootContainerProps={{ colorScheme: "dark" }} />}
-      </footer> 
+      </footer>  */}
     </section>
   );
 }

@@ -4,7 +4,6 @@
 
 @layer base {
   :root {
-
     --foreground: 210 20% 98%;
     --card: 224 71.4% 4.1%;
     --card-foreground: 210 20% 98%;
@@ -59,26 +58,35 @@
   }
 }
 
-  /* Custom animation keyframes */
-  @keyframes gradient-x {
-    0%, 100% {
-        background-size: 200% 200%;
-        background-position: left center;
-    }
-    50% {
-        background-size: 200% 200%;
-        background-position: right center;
-    }
+/* Custom animation keyframes */
+@keyframes gradient-x {
+  0%,
+  100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
 }
 
 /* Apply the animation to the hero section */
 .animate-gradient-x {
-    animation: gradient-x 15s ease infinite;
+  animation: gradient-x 15s ease infinite;
 }
 
 /* Define the gradient colors */
 .custom-gradient {
-    background-image: linear-gradient(to right, #220E2E, #000000, #001A31, #002600, #04041E, #000400);
+  background-image: linear-gradient(
+    to right,
+    #220e2e,
+    #000000,
+    #001a31,
+    #002600,
+    #04041e,
+    #000400
+  );
 }
 
 /* width */
@@ -94,12 +102,23 @@
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #888;
-
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+html *,
+html *::before,
+html *::after {
+  box-sizing: inherit;
+  scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 /* audio customize 

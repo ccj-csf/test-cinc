@@ -23,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" className="custom-gradient animate-gradient-x">
+      <html lang="en">
         <body className={inter.className}>
           <Toaster position="top-center" richColors />
 
