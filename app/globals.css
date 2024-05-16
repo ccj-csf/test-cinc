@@ -121,8 +121,8 @@ html *::after {
   height: 0;
 }
 
-/* audio customize 
-audio::-webkit-media-controls-panel {
+/* audio customize  */
+/* audio::-webkit-media-controls-panel {
   background-color: #252525;
   color: #ffffff;
   border-radius: 1px;
@@ -135,5 +135,4 @@ audio::-webkit-media-controls-timeline {
 }
 audio::-webkit-media-controls-volume-slider {
   background-color: #321652;
-}
-*/
+} */

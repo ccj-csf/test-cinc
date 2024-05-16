@@ -1,3 +1,4 @@
+"use client";
 import { AppContext } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
 import { useContext, useState } from "react";
@@ -8,7 +9,7 @@ import { Drawer } from "antd";
 import { CloseOutlined, RightOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
-
+import { useRouter } from "next/navigation";
 export interface Tab {
   title: string;
   name?: string;
@@ -29,6 +30,11 @@ export default function () {
   };
 
   const onClose = () => {
+    setOpen(false);
+  };
+  const router = useRouter();
+  const handleClickNav = (n: Tab) => {
+    n.url && router.push(n.url);
     setOpen(false);
   };
 
@@ -98,18 +104,17 @@ export default function () {
               }
             >
               <main className="space-y-4 flex flex-col text-[40px]">
-                <Link
-                  className="flex justify-between items-center text-[28px]  pb-4 text-white"
-                  href="/"
-                >
-                  <span>Explore</span>
-                </Link>
-                <Link
-                  className="flex justify-between items-center text-[28px]  pb-4 text-white"
-                  href="/create"
-                >
-                  <span>Create</span>
-                </Link>
+                {navigation.map((n) => {
+                  return (
+                    <div
+                      className="flex justify-between items-center text-[28px]  pb-4 text-white"
+                      key={n.title}
+                      onClick={() => handleClickNav(n)}
+                    >
+                      <span>{n.title}</span>
+                    </div>
+                  );
+                })}
               </main>
             </Drawer>
             <div className="hidden flex flex-row items-center lg:flex lg:flex-row lg:space-x-3 lg:space-y-0">

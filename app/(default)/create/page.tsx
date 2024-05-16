@@ -6,7 +6,6 @@ import { fetchEnhanced } from "@/utils/request";
 import Hero from "@/components/hero";
 import Input from "@/components/input";
 import { Music } from "@/types/music";
-
 const data = {
   isFinish: true,
   list: [
@@ -27,7 +26,7 @@ const data = {
 
 const regex = /\/([^.]*)\.mp3/;
 export default function () {
-  const [music, setMusic] = useState<Music[]>();
+  const [music, setMusic] = useState<Music[]>(data.list);
   const [selectedSongIndex, setSelectedSongIndex] = useState<string>("0");
   const { data: musicList, loading } = useRequest(
     async () => {
@@ -79,11 +78,11 @@ export default function () {
                   />
                 </div>
                 <div className="p-4 pt-0">
-                  <h5 className="block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
+                  <h5 className="block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased z-100">
                     {music.song_name}
                   </h5>
                   <p
-                    className="block -mt-4 font-sans text-base font-light leading-relaxed text-inherit antialiased max-h-60 verscroll-y-auto overflow-y-scroll"
+                    className="block  font-sans text-base font-light leading-relaxed text-inherit antialiased max-h-[240px] overflow-y-scroll"
                     dangerouslySetInnerHTML={{
                       __html: music.lyric?.replace?.(/\n{1,2}/g, "<br>") ?? "",
                     }}
