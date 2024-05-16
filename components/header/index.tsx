@@ -42,8 +42,8 @@ export default function () {
                 onClick={showDrawer}
                 src={"/icons/menu.svg"}
                 alt="menu"
-                width={48}
-                height={48}
+                width={32}
+                height={32}
               ></Image>
             </div>
             <Link
@@ -52,13 +52,13 @@ export default function () {
             >
               <img
                 src="/logo.png"
-                className="h-4 md:w-auto md:h-10"
+                className="h-4 md:w-auto md:h-7"
                 alt="WAV Music"
               />
             </Link>
             <div className="md:hidden">
               {user === undefined ? (
-                <>loading...</>
+                <div className="text-black">loading...</div>
               ) : (
                 <>
                   {user ? (
@@ -102,19 +102,19 @@ export default function () {
                   className="flex justify-between items-center text-[28px]  pb-4 text-white"
                   href="/"
                 >
-                  <span>home</span>
+                  <span>Explore</span>
                 </Link>
                 <Link
                   className="flex justify-between items-center text-[28px]  pb-4 text-white"
-                  href="/explore"
+                  href="/create"
                 >
-                  <span>explore</span>
+                  <span>Create</span>
                 </Link>
               </main>
             </Drawer>
             <div className="hidden flex flex-row items-center lg:flex lg:flex-row lg:space-x-3 lg:space-y-0">
               {user === undefined ? (
-                <>loading...</>
+                <div className="text-black">loading...</div>
               ) : (
                 <>
                   {user ? (

@@ -19,7 +19,7 @@ interface Props {
 
 export default function ({ user }: Props) {
   return (
-    <>
+    <div>
       {/* {user.credits && (
         <div className="hidden md:block mr-8 font-medium cursor-pointer">
           credits:{" "}
@@ -43,10 +43,12 @@ export default function ({ user }: Props) {
           <DropdownMenuSeparator />
 
           <DropdownMenuCheckboxItem>
-            <SignOutButton signOutCallback={() => location.reload()} />
+            <div className="!text-red-500 font-bold">
+              <SignOutButton signOutCallback={() => location.reload()} />
+            </div>
           </DropdownMenuCheckboxItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </>
+    </div>
   );
 }

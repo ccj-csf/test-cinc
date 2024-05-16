@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { fetchEnhanced } from "@/utils/request";
 import { useRequest } from "ahooks";
 import CountUp from "react-countup";
+import useMessage from "@/hooks/useMessage";
 
 interface Props {
   setMusic: (music: Music[]) => void;
@@ -18,7 +19,7 @@ interface Props {
 
 export default function ({ setMusic }: Props) {
   const { user, fetchUserInfo } = useContext(AppContext);
-
+  const { showMessage, contextHolder } = useMessage();
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -34,7 +35,8 @@ export default function ({ setMusic }: Props) {
       });
 
       if (code === 401) {
-        toast.error("Please Log In First");
+        // toast.error("Please Log In First");
+        showMessage.error("Please Log In First");
         router.push("/sign-in");
         return;
       }
@@ -49,7 +51,8 @@ export default function ({ setMusic }: Props) {
       manual: true,
       onSuccess: () => getToken(),
       onError: () => {
-        toast.error("Gen music failed");
+        // toast.error("Gen music failed");
+        showMessage.error("Gen music failed");
         setLoading(false);
       },
     }
@@ -71,7 +74,8 @@ export default function ({ setMusic }: Props) {
         setTimeout(async () => await getFeed(), 100);
       },
       onError: () => {
-        toast.error("Gen music failed");
+        // toast.error("Gen music failed");
+        showMessage.error("Gen music failed");
         setLoading(false);
       },
     }
@@ -109,7 +113,8 @@ export default function ({ setMusic }: Props) {
 
         setMusic(data.list);
         setDescription("");
-        toast.success("Gen music success");
+        // toast.success("Gen music success");
+        showMessage.success("Gen music success");
         setLoading(false);
         fetchUserInfo();
       },
@@ -120,9 +125,11 @@ export default function ({ setMusic }: Props) {
         }
 
         if (error?.code === "BIZ_MODERATION_FAILURE") {
-          toast.error("Sorry, prompt likely copyrighted");
+          // toast.error("Sorry, prompt likely copyrighted");
+          showMessage.error("Sorry, prompt likely copyrighted");
         } else {
-          toast.error("Gen music failed");
+          showMessage.error("Gen music failed");
+          // toast.error("Gen music failed");
         }
 
         setLoading(false);
@@ -141,13 +148,14 @@ export default function ({ setMusic }: Props) {
 
   const onSubmit = function () {
     if (!description) {
-      toast.error("Please Enter Your Song Description");
+      showMessage.error("Please Enter Your Song Description");
       inputRef.current?.focus();
       return;
     }
 
     if (!user) {
-      toast.error("Please Log In First");
+      showMessage.error("Please Log In First");
+
       return;
     }
 
@@ -161,6 +169,7 @@ export default function ({ setMusic }: Props) {
 
   return (
     <form className="w-full" onSubmit={() => false}>
+      {contextHolder}
       <div className="cursor-pointer rounded-md font-semibold">
         <Input
           rows={5}
@@ -168,14 +177,14 @@ export default function ({ setMusic }: Props) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           onKeyDown={onInputKeydown}
-          className="border-[#FFF] text-black md:h-[200px] md:rounded-[16px]  !placeholder-[#b9b7b7] !font-normal"
+          className="border-[#FFF] text-black md:h-[200px] md:rounded-[16px]  !placeholder-[#7e7e7e] !font-normal "
           disabled={loading}
           ref={inputRef}
         />
       </div>
 
       <Button
-        className="w-full mt-4  rounded-[24px] "
+        className="w-full mt-4  rounded-[24px] h-[44px]"
         type="button"
         disabled={loading}
         onClick={onSubmit}

@@ -89,10 +89,54 @@ const config = {
         },
         fadeIn: {
           "0%": {
-            opacity: "0.5",
+            opacity: "0",
           },
           "100%": {
             opacity: "1",
+          },
+        },
+        shrink: {
+          "0%": {
+            width: "100%",
+          },
+          "100%": {
+            width: "68%",
+          },
+        },
+        scaleIn: {
+          "0%": {
+            transform: "scale(0)",
+            opacity: "0",
+          },
+          "50%": {
+            transform: "scale(1.5)",
+            opacity: "0.6",
+          },
+          "70%": {
+            transform: "scale(1.2)",
+            opacity: "0.8",
+          },
+          "100%": {
+            transform: "scale(1)",
+            opacity: "1",
+          },
+        },
+        scaleOut: {
+          "0%": {
+            transform: "scale(1)",
+            opacity: "1",
+          },
+          "50%": {
+            transform: "scale(0.8)",
+            opacity: "0.8",
+          },
+          "70%": {
+            transform: "scale(0.6)",
+            opacity: "0.6",
+          },
+          "100%": {
+            transform: "scale(0)",
+            opacity: "0",
           },
         },
       },
@@ -102,6 +146,9 @@ const config = {
         zoomIn: "zoomIn 1s ease-in-out forwards",
         zoomOut: "zoomOut 1s ease-in-out forwards",
         fadeIn: "fadeIn 1s ease-in-out forwards",
+        shrink: "shrink 1s ease-in-out forwards",
+        scaleIn: "scaleIn 1s ease-in-out forwards",
+        scaleOut: "scaleOut 1s ease-in-out forwards",
       },
     },
   },

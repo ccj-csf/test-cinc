@@ -7,7 +7,55 @@ import MusicPlayer from "@/components/MusicPlayer/MusicPlayer";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+type NamePart = {
+  firstNames: string[];
+  lastNames: string[];
+};
 
+const nameData: NamePart = {
+  firstNames: [
+    "James",
+    "John",
+    "Robert",
+    "Michael",
+    "William",
+    "David",
+    "Richard",
+    "Joseph",
+    "Charles",
+    "Thomas",
+    "Christopher",
+    "Daniel",
+    "Matthew",
+    "Mark",
+    "Brian",
+  ],
+  lastNames: [
+    "Smith",
+    "Johnson",
+    "Williams",
+    "Brown",
+    "Jones",
+    "Miller",
+    "Davis",
+    "Garcia",
+    "Rodriguez",
+    "Wilson",
+    "Martinez",
+    "Anderson",
+    "Taylor",
+    "Thomas",
+    "Hernandez",
+  ],
+};
+
+function getRandomName(): string {
+  const randomFirstName =
+    nameData.firstNames[Math.floor(Math.random() * nameData.firstNames.length)];
+  const randomLastName =
+    nameData.lastNames[Math.floor(Math.random() * nameData.lastNames.length)];
+  return `${randomFirstName} ${randomLastName}`;
+}
 export default function () {
   // 获取音乐列表
   const { run, data, loading } = useRequest(
@@ -37,7 +85,7 @@ export default function () {
                 resolve({
                   ...song,
                   duration: audio.duration,
-                  artist: song.display_name,
+                  artist: getRandomName(),
                   img: song.image_url,
                   url: song.audio_url,
                 });

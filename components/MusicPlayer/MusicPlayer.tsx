@@ -128,6 +128,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   // 状态控制是否使用网格布局
   const [isMobileLayout, setIsMobileLayout] = useState<boolean>(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const menuRef = useRef<HTMLImageElement | null>(null);
 
   const handleAnimationEnd = (event: any) => {
     console.log("Animation name:", event.animationName);
@@ -142,11 +143,20 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   };
   const handleSwitchLayoutOut = () => {
     replaceClass("animate-zoomIn", "animate-zoomOut");
+    // isMobileLayout &&
+    // replaceClass(menuRef, "animate-scaleIn", "animate-scaleOut");
+    replaceClass1("animate-scaleIn", "animate-scaleOut");
   };
   const replaceClass = (oldClass: string, newClass: string): void => {
     const img = imgRef.current;
     if (img) {
       img.classList.replace(oldClass, newClass);
+    }
+  };
+  const replaceClass1 = (oldClass: string, newClass: string): void => {
+    const menu = menuRef.current;
+    if (menu) {
+      menu.classList.replace(oldClass, newClass);
     }
   };
 
@@ -163,11 +173,14 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
         {!isMobileLayout ? (
           <section className=" grid grid-cols-12 gap-x-4 sticky top-0 bg-white z-[10] rounded-[32px] pt-[36px] pb-6 shadow-lg px-6">
             <aside className="relative  col-span-3">
-              <img
+              <Image
                 src={songs[currentSongIndex]?.img}
                 alt="Album Cover"
-                className="rounded-[20px] w-full h-full"
+                className="rounded-[20px] h-full w-full object-cover"
+                width={100}
+                height={100}
               />
+
               {isPlaying ? (
                 <Image
                   src="/icons/pause.svg"
@@ -188,7 +201,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
                 />
               )}
             </aside>
-            <article className="flex flex-col justify-between col-span-9  animate-fadeIn">
+            <article className="flex flex-col justify-between col-span-9">
               <div className="flex items-center  justify-between">
                 {hover ? (
                   <Image
@@ -217,12 +230,12 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
                     onClick={handleSwitchLayout}
                   >
                     <MarqueeText
-                      text={songs[currentSongIndex]?.artist}
+                      text={songs[currentSongIndex]?.title}
                     ></MarqueeText>
                   </div>
                   <div className="text-[12px] md:text-[24px] w-full text-center text-gray-500">
                     <MarqueeText
-                      text={songs[currentSongIndex]?.title}
+                      text={songs[currentSongIndex]?.artist}
                     ></MarqueeText>
                   </div>
                 </div>
@@ -262,19 +275,20 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
             </article>
           </section>
         ) : (
-          <section className={`max-w-[470px] `}>
+          <section className={`max-w-[470px]`}>
             <div className="relative">
               <img
                 src={songs[currentSongIndex]?.img}
                 alt="Album Cover"
                 ref={imgRef}
                 onAnimationEnd={handleAnimationEnd}
-                className={`rounded-[20px] w-full max-h-[305px] md:max-h-[400px] animate-zoomIn`}
+                className={`rounded-[20px] w-full max-h-[290px] md:max-h-[400px] animate-zoomIn`}
               />
               <Image
+                ref={menuRef}
                 src="/icons/folding-button.svg"
                 alt="Description of the image"
-                className="text-4xl cursor-pointer absolute top-8 left-8"
+                className="text-4xl cursor-pointer absolute top-8 left-8  animate-scaleIn"
                 width={IS_MOBILE ? 46 : 56}
                 height={IS_MOBILE ? 46 : 56}
                 onClick={handleSwitchLayoutOut}
@@ -381,10 +395,12 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
                   key={song.id}
                 >
                   <div className="col-span-3">
-                    <img
+                    <Image
                       src={song.img}
                       alt="Album Cover"
                       className="rounded-[20px] w-full h-full"
+                      width={100}
+                      height={100}
                     />
                   </div>
                   <div className="flex justify-between items-center col-span-9">
@@ -392,13 +408,13 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
                       <span className="text-[14px] md:text-[20px] font-bold truncate">
                         {song.title}
                       </span>
-                      <span className="text-gray-500 text-[12px] md:text-[16px]">
+                      <span className="text-gray-500 text-[12px] md:text-[16px] mt-2 md:mt-3">
                         {song.artist}
                       </span>
                     </div>
                     <div className="flex flex-col text-[12px] md:text-[16px]">
                       <span className="opacity-0">占位</span>
-                      <span className="text-gray-500">
+                      <span className="text-gray-500 mt-2 md:mt-3">
                         {formatDuration(song.duration)}
                       </span>
                     </div>
