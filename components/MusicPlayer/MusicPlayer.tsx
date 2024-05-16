@@ -142,21 +142,14 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
     setIsMobileLayout(true);
   };
   const handleSwitchLayoutOut = () => {
-    replaceClass("animate-zoomIn", "animate-zoomOut");
-    // isMobileLayout &&
-    // replaceClass(menuRef, "animate-scaleIn", "animate-scaleOut");
-    replaceClass1("animate-scaleIn", "animate-scaleOut");
+    replaceClass(imgRef, "animate-zoomIn", "animate-zoomOut");
+    replaceClass(menuRef, "animate-scaleIn", "animate-scaleOut");
   };
-  const replaceClass = (oldClass: string, newClass: string): void => {
-    const img = imgRef.current;
-    if (img) {
-      img.classList.replace(oldClass, newClass);
-    }
-  };
-  const replaceClass1 = (oldClass: string, newClass: string): void => {
-    const menu = menuRef.current;
-    if (menu) {
-      menu.classList.replace(oldClass, newClass);
+
+  const replaceClass = (ref: any, oldClass: string, newClass: string): void => {
+    const current = ref.current;
+    if (current) {
+      current.classList.replace(oldClass, newClass);
     }
   };
 
@@ -203,7 +196,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
             </aside>
             <article className="flex flex-col justify-between col-span-9">
               <div className="flex items-center  justify-between">
-                {hover ? (
+                {hover && !IS_MOBILE ? (
                   <Image
                     onMouseLeave={() => setHover(false)}
                     src="/icons/prev-song-hover.svg"
@@ -216,7 +209,11 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
                 ) : (
                   <Image
                     onMouseEnter={() => setHover(true)}
-                    src="/icons/prev-song.svg"
+                    src={
+                      IS_MOBILE
+                        ? "/icons/prev-song-hover.svg"
+                        : "/icons/prev-song.svg"
+                    }
                     alt="Description of the image"
                     onClick={handlePrev}
                     className=" cursor-pointer"
@@ -239,7 +236,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
                     ></MarqueeText>
                   </div>
                 </div>
-                {nextHover ? (
+                {nextHover && !IS_MOBILE ? (
                   <Image
                     src="/icons/next-song-hover.svg"
                     alt="Description of the image"
@@ -252,7 +249,11 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
                 ) : (
                   <Image
                     onMouseEnter={() => setNextHover(true)}
-                    src="/icons/next-song.svg"
+                    src={
+                      IS_MOBILE
+                        ? "/icons/next-song-hover.svg"
+                        : "/icons/next-song.svg"
+                    }
                     alt="Description of the image"
                     onClick={handleNext}
                     className=" cursor-pointer"
@@ -275,12 +276,14 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
             </article>
           </section>
         ) : (
-          <section className={`max-w-[470px]`}>
+          <section className={`max-w-[470px] w-full`}>
             <div className="relative">
-              <img
+              <Image
                 src={songs[currentSongIndex]?.img}
                 alt="Album Cover"
                 ref={imgRef}
+                width={100}
+                height={100}
                 onAnimationEnd={handleAnimationEnd}
                 className={`rounded-[20px] w-full max-h-[290px] md:max-h-[400px] animate-zoomIn`}
               />
@@ -315,7 +318,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
             </div>
             <article className="flex flex-col justify-between px-4 mt-6">
               <div className="flex items-center  justify-between px-6">
-                {hover ? (
+                {hover && !IS_MOBILE ? (
                   <Image
                     onMouseLeave={() => setHover(false)}
                     src="/icons/prev-song-hover.svg"
@@ -328,7 +331,11 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
                 ) : (
                   <Image
                     onMouseEnter={() => setHover(true)}
-                    src="/icons/prev-song.svg"
+                    src={
+                      IS_MOBILE
+                        ? "/icons/prev-song-hover.svg"
+                        : "/icons/prev-song.svg"
+                    }
                     alt="Description of the image"
                     onClick={handlePrev}
                     className=" cursor-pointer"
@@ -349,7 +356,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
                     ></MarqueeText>
                   </div>
                 </div>
-                {nextHover ? (
+                {nextHover && !IS_MOBILE ? (
                   <Image
                     src="/icons/next-song-hover.svg"
                     alt="Description of the image"
@@ -362,7 +369,11 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
                 ) : (
                   <Image
                     onMouseEnter={() => setNextHover(true)}
-                    src="/icons/next-song.svg"
+                    src={
+                      IS_MOBILE
+                        ? "/icons/next-song-hover.svg"
+                        : "/icons/next-song.svg"
+                    }
                     alt="Description of the image"
                     onClick={handleNext}
                     className=" cursor-pointer"
