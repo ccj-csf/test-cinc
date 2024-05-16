@@ -26,7 +26,7 @@ const data = {
 
 const regex = /\/([^.]*)\.mp3/;
 export default function () {
-  const [music, setMusic] = useState<Music[]>(data.list);
+  const [music, setMusic] = useState<Music[]>();
   const [selectedSongIndex, setSelectedSongIndex] = useState<string>("0");
   const { data: musicList, loading } = useRequest(
     async () => {
