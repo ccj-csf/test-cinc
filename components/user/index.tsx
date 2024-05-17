@@ -12,12 +12,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User } from "@/types/user";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { AppContext } from "@/contexts/AppContext";
 
 interface Props {
   user: User;
 }
 
 export default function ({ user }: Props) {
+  const router = useRouter();
+  const { fetchUserInfo } = useContext(AppContext);
   return (
     <div>
       {/* {user.credits && (
@@ -42,9 +47,14 @@ export default function ({ user }: Props) {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
 
-          <DropdownMenuCheckboxItem>
-            <div className="!text-red-500 font-bold">
-              <SignOutButton signOutCallback={() => location.reload()} />
+          <DropdownMenuCheckboxItem className="hover:!bg-white">
+            <div className="!text-red-500 font-bold ">
+              <SignOutButton
+                signOutCallback={async () => {
+                  router.push("/");
+                  fetchUserInfo();
+                }}
+              />
             </div>
           </DropdownMenuCheckboxItem>
         </DropdownMenuContent>
